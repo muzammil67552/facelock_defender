@@ -8,6 +8,7 @@ const Login = ({ correctPassword, onLoginSuccess, onLoginFailure }) => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [failedAttempts, setFailedAttempts] = useState(0);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,9 +18,18 @@ const Login = ({ correctPassword, onLoginSuccess, onLoginFailure }) => {
     setTimeout(() => {
       if (password === correctPassword) {
         onLoginSuccess();
+        setFailedAttempts(0);
       } else {
-        setError("Incorrect password detected!");
-        onLoginFailure();
+        const newAttempts = failedAttempts + 1;
+        setFailedAttempts(newAttempts);
+        
+        if (newAttempts >= 2) {
+          setError("Multiple incorrect attempts detected! Capturing photo...");
+          onLoginFailure();
+          setFailedAttempts(0);
+        } else {
+          setError(`Incorrect password! Attempt ${newAttempts} of 2.`);
+        }
       }
       setIsLoading(false);
       setPassword("");

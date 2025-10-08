@@ -1,10 +1,14 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Shield, Home, Image, Settings as SettingsIcon } from "lucide-react";
+import { Shield, Home, Image, Settings as SettingsIcon, Menu, X } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 import { cn } from "@/lib/utils";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 const Nav = ({ theme, setTheme }) => {
   const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
     { path: "/", icon: Home, label: "Home" },
@@ -23,8 +27,9 @@ const Nav = ({ theme, setTheme }) => {
             </span>
           </Link>
 
-          <div className="flex items-center gap-6">
-            <div className="hidden sm:flex items-center gap-4">
+          <div className="flex items-center gap-4">
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-4">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
@@ -47,6 +52,39 @@ const Nav = ({ theme, setTheme }) => {
             </div>
 
             <ThemeToggle theme={theme} setTheme={setTheme} />
+
+            {/* Mobile Menu */}
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-64">
+                <div className="flex flex-col gap-4 mt-8">
+                  {navItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = location.pathname === item.path;
+                    return (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        onClick={() => setIsOpen(false)}
+                        className={cn(
+                          "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
+                          isActive
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                        )}
+                      >
+                        <Icon className="h-5 w-5" />
+                        <span className="text-base">{item.label}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>
