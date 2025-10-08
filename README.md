@@ -1,58 +1,50 @@
-# Welcome to your Lovable project
+# Sentinel Snap Web
 
-## Project info
+## About this project
 
-**URL**: https://lovable.dev/projects/447b77cb-c62a-4cc3-a472-fd88c4efda76
+Sentinel Snap Web is the frontend for the FaceLock Defender demo application. It is a Vite + React + TypeScript app using Tailwind CSS and shadcn-ui components. This repository contains the source code for the web UI, plus utility scripts and components used by the app.
 
-## How can I edit this code?
+This README has been updated to remove references to third-party editor-specific tooling and to provide clear instructions for copying and running the repository locally.
 
-There are several ways of editing your application.
+## How to copy this repository
 
-**Use Lovable**
+You can copy this repository in several ways depending on your workflow:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/447b77cb-c62a-4cc3-a472-fd88c4efda76) and start prompting.
+- Fork on GitHub: create your own copy under your account, then clone your fork locally.
+- Clone directly: clone this repository URL to your machine.
+- Download ZIP: download the repository as a ZIP from GitHub and extract it.
 
-Changes made via Lovable will be committed automatically to this repo.
+Typical steps to clone and run locally:
 
-**Use your preferred IDE**
+```powershell
+# 1) Clone the repo (replace <REPO_GIT_URL> with this repo's Git URL)
+git clone <REPO_GIT_URL>
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+# 2) Enter the project directory
+cd sentinel-snap-web
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+# 3) Install dependencies
+npm install
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 4) Run the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+If you prefer to fork the repository first (recommended for contributing):
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. Visit the repository on GitHub and click "Fork".
+2. Clone your forked repo to your machine: `git clone https://github.com/<your-username>/sentinel-snap-web.git`
+3. Add the original repo as an upstream remote (optional): `git remote add upstream https://github.com/muzammil67552/facelock_defender.git`
 
-**Use GitHub Codespaces**
+Note: Node.js and npm are required. If you need a version manager, see nvm: https://github.com/nvm-sh/nvm#installing-and-updating
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Editing and contributing
 
-## What technologies are used for this project?
+Use your preferred IDE (VS Code, WebStorm, etc.) to edit files locally. Commit and push changes to your fork or a feature branch.
 
-This project is built with:
+If you want an online editor, you can use GitHub's web editor or Codespaces (if available on your account).
+
+## Technologies used
 
 - Vite
 - TypeScript
@@ -60,14 +52,19 @@ This project is built with:
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
+## Running the project
 
-Simply open [Lovable](https://lovable.dev/projects/447b77cb-c62a-4cc3-a472-fd88c4efda76) and click on Share -> Publish.
+Install dependencies and run the dev server as shown above. Common npm scripts in this project (check `package.json` to confirm):
 
-## Can I connect a custom domain to my Lovable project?
+- `npm run dev` — start the development server
+- `npm run build` — build for production
+- `npm run preview` — preview the production build locally
 
-Yes, you can!
+## Deployment
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+This is a static frontend application that can be deployed to any static host (Vercel, Netlify, GitHub Pages, Cloudflare Pages, etc.). The basic flow is:
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+1. Build the app: `npm run build`
+2. Deploy the `dist` (or `build`) output directory to your hosting provider
+
+Refer to your hosting provider's docs for specific instructions.
