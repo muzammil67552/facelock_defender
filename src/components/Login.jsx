@@ -22,14 +22,30 @@ const Login = ({ correctPassword, onLoginSuccess, onLoginFailure }) => {
       } else {
         const newAttempts = failedAttempts + 1;
         setFailedAttempts(newAttempts);
-        
-        if (newAttempts >= 2) {
-          setError("Multiple incorrect attempts detected! Capturing photo...");
-          onLoginFailure();
-          setFailedAttempts(0);
-        } else {
-          setError(`Incorrect password! Attempt ${newAttempts} of 2.`);
-        }
+        // Read trigger threshold from local storage (default 2)
+        try {
+          const { getTriggerThreshold } = require('@/utils/storage');
+        } catch (err) {}
+        // Lazy import via dynamic import to avoid SSR issues
+        import('@/utils/storage').then((mod) => {
+          const threshold = mod.getTriggerThreshold ? mod.getTriggerThreshold() : 2;
+          if (newAttempts >= threshold) {
+            setError(`Multiple incorrect attempts detected! Capturing photo...`);
+            onLoginFailure();
+            setFailedAttempts(0);
+          } else {
+            setError(`Incorrect password! Attempt ${newAttempts} of ${threshold}.`);
+          }
+        }).catch(() => {
+          // Fallback to 2
+          if (newAttempts >= 2) {
+            setError("Multiple incorrect attempts detected! Capturing photo...");
+            onLoginFailure();
+            setFailedAttempts(0);
+          } else {
+            setError(`Incorrect password! Attempt ${newAttempts} of 2.`);
+          }
+        });
       }
       setIsLoading(false);
       setPassword("");

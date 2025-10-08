@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
+import { checkCameraPermission } from "@/utils/capture";
 
 const EmailSetup = ({ onEmailSet }) => {
   const [email, setEmail] = useState("");
@@ -22,14 +23,30 @@ const EmailSetup = ({ onEmailSet }) => {
     }
 
     setIsLoading(true);
-    setTimeout(() => {
-      onEmailSet(email);
-      toast({
-        title: "Email Registered",
-        description: "Your security system is now active!",
-      });
-      setIsLoading(false);
-    }, 800);
+
+    (async () => {
+      // Try to ensure camera permission is available during setup
+      const hasCamera = await checkCameraPermission();
+      if (!hasCamera) {
+        toast({
+          title: "Camera Permission Required",
+          description: "This app needs camera access to capture intruder photos. Please allow camera access and try again.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Simulate short setup delay
+      setTimeout(() => {
+        onEmailSet(email);
+        toast({
+          title: "Email Registered",
+          description: "Your security system is now active!",
+        });
+        setIsLoading(false);
+      }, 400);
+    })();
   };
 
   return (

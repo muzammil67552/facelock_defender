@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { getEmail, setEmail, clearAllPhotos, getPhotos } from "@/utils/storage";
+import { getEmail, setEmail, clearAllPhotos, getPhotos, getTriggerThreshold, setTriggerThreshold, getEmailWebhook, setEmailWebhook } from "@/utils/storage";
 import { capturePhoto } from "@/utils/capture";
 import { toast } from "@/hooks/use-toast";
 
@@ -22,6 +22,8 @@ const Settings = () => {
   const [currentEmail, setCurrentEmail] = useState(getEmail());
   const [newEmail, setNewEmail] = useState(currentEmail);
   const [isTestingCamera, setIsTestingCamera] = useState(false);
+  const [threshold, setThreshold] = useState(getTriggerThreshold());
+  const [webhook, setWebhook] = useState(getEmailWebhook());
 
   const handleUpdateEmail = () => {
     if (!newEmail || !newEmail.includes('@')) {
@@ -39,6 +41,17 @@ const Settings = () => {
       title: "Email Updated",
       description: "Your registered email has been updated successfully.",
     });
+  };
+
+  const handleUpdateThreshold = () => {
+    const n = parseInt(threshold, 10) || 2;
+    setTriggerThreshold(n);
+    toast({ title: 'Trigger Updated', description: `Capture will trigger after ${n} incorrect attempt${n!==1? 's' : ''}.` });
+  };
+
+  const handleUpdateWebhook = () => {
+    setEmailWebhook(webhook);
+    toast({ title: 'Webhook Updated', description: webhook ? 'Webhook URL saved.' : 'Webhook cleared.' });
   };
 
   const handleClearPhotos = () => {
@@ -106,6 +119,44 @@ const Settings = () => {
               <Save className="h-4 w-4 mr-2" />
               Update Email
             </Button>
+          </CardContent>
+        </Card>
+
+        {/* Trigger Threshold */}
+        <Card className="shadow-primary">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Camera className="h-5 w-5" />
+              Capture Threshold
+            </CardTitle>
+            <CardDescription>
+              Number of consecutive wrong password attempts required to trigger a capture.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-2">
+              <Input type="number" min={1} value={threshold} onChange={(e) => setThreshold(e.target.value)} />
+              <Button onClick={handleUpdateThreshold}>Save</Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Webhook / Email Endpoint */}
+        <Card className="shadow-primary">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Mail className="h-5 w-5" />
+              Email Webhook (optional)
+            </CardTitle>
+            <CardDescription>
+              Optional endpoint to receive captured images (POST JSON). If empty, email sending is simulated locally.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <Input value={webhook} onChange={(e) => setWebhook(e.target.value)} placeholder="https://example.com/webhook" />
+              <Button onClick={handleUpdateWebhook} className="mt-2">Save Webhook</Button>
+            </div>
           </CardContent>
         </Card>
 

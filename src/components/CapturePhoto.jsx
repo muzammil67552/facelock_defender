@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Camera, AlertTriangle } from "lucide-react";
-import { capturePhoto } from "@/utils/capture";
+import { capturePhoto, checkCameraPermission } from "@/utils/capture";
 import { addPhoto } from "@/utils/storage";
+import { sendImageToEmail } from "@/utils/email";
 import { toast } from "@/hooks/use-toast";
 
 const CapturePhoto = ({ onCaptureDone }) => {
@@ -15,14 +16,35 @@ const CapturePhoto = ({ onCaptureDone }) => {
   const performCapture = async () => {
     setCapturing(true);
     try {
+      const hasPermission = await checkCameraPermission();
+      if (!hasPermission) {
+        throw new Error('Camera permission not granted');
+      }
+
       const imageData = await capturePhoto();
       const photo = addPhoto(imageData);
       setCapturedImage(imageData);
-      
+
       toast({
         title: "⚠️ Intruder Detected!",
         description: "Photo captured and logged successfully.",
         variant: "destructive",
+      });
+
+      // Attempt to send to registered email (or webhook). This runs but we don't block UI.
+      sendImageToEmail(photo).then((res) => {
+        if (res && res.success) {
+          // Optionally notify success (quiet)
+        } else {
+          // Log failure toasts if needed
+          toast({
+            title: 'Email Send Failed',
+            description: res && res.error ? String(res.error) : 'Unknown error',
+            variant: 'destructive',
+          });
+        }
+      }).catch((e) => {
+        console.error('Email send error', e);
       });
 
       setTimeout(() => {
